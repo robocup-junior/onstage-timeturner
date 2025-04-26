@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="fullscreen-app" class="settings-page">
+    <div id="settings-container">
+      <h1>Stopwatch Settings</h1>
+      
+      <div class="settings-group">
+        <div class="setting-item">
+          <label for="stopwatchName">Stopwatch Name: <small>(also creates a custom URL)</small></label>
+          <input type="text" id="stopwatchName" placeholder="Enter a name for this stopwatch">
+        </div>
+        
+        <div class="setting-item">
+          <label for="imageUrl">Background Image URL:</label>
+          <input type="url" id="imageUrl" placeholder="Enter a URL for a background image">
+        </div>
+        
+        <div class="setting-item">
+          <label for="primaryColor">Primary Color:</label>
+          <div class="color-input-container">
+            <input type="color" id="primaryColor" value="#2b3075">
+            <input type="text" id="primaryColorText" placeholder="#2b3075">
+          </div>
+        </div>
+        
+        <div class="setting-item">
+          <label for="secondaryColor">Secondary Color:</label>
+          <div class="color-input-container">
+            <input type="color" id="secondaryColor" value="#ec1f2a">
+            <input type="text" id="secondaryColorText" placeholder="#ec1f2a">
+          </div>
+        </div>
+      </div>
+      
+      <div class="control-links">
+        <a href="#" id="controlLink">Back to Controls</a>
+        <a href="#" id="watchLink">View Stopwatch</a>
+        <button id="saveSettingsBtn">Save Settings</button>
+      </div>
+      
+      <p class="current-id">Stopwatch ID: <span id="stopwatchId"></span></p>
+    </div>
+  </div>
+  <script src="settings.js"></script>
+</body>
+</html>
