@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Connect to Socket.io server
+  const socket = io();
+  
   // Get or create stopwatch ID from URL parameter
   let params = new URLSearchParams(window.location.search);
   let stopwatchId = params.get('id');
@@ -10,8 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
   
-  // Set up localStorage keys for this specific stopwatch
-  const storageKey = `stopwatch_${stopwatchId}`;
+  // Join the specific stopwatch room
+  socket.emit('join', stopwatchId);
+  
+  // Set up localStorage keys for settings (still using localStorage for settings persistence)
   const settingsKey = `stopwatch_settings_${stopwatchId}`;
   
   // Load settings
@@ -37,20 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
   updateWallClock();
   setInterval(updateWallClock, 1000);
   
-  // Load state from localStorage
-  loadState();
-  
   // Update display immediately
   updateDisplay();
-  
-  // Listen for settings changes
-  window.addEventListener('storage', (event) => {
-    if (event.key === settingsKey) {
-      loadSettings();
-      updateStopwatchName();
-      loadBackgroundImage();
-    }
-  });
   
   // Function to load settings
   function loadSettings() {
@@ -125,27 +118,74 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  // Set up localStorage event listener for control events
-  window.addEventListener('storage', (event) => {
-    if (event.key === storageKey) {
-      const state = JSON.parse(event.newValue);
-      
-      // Handle different commands
-      if (state.command === 'start' && !isRunning) {
-        startTimer();
-      } else if (state.command === 'stop' && isRunning) {
-        stopTimer();
-      } else if (state.command === 'reset') {
-        resetTimer();
-      }
+  // Socket.io event listeners
+  
+  // Listen for command events from the server
+  socket.on('command', (data) => {
+    // Handle different commands
+    if (data.command === 'start' && !isRunning) {
+      startTimer();
+    } else if (data.command === 'stop' && isRunning) {
+      stopTimer();
+    } else if (data.command === 'reset') {
+      resetTimer();
     }
+  });
+  
+  // Listen for state update events from the server
+  socket.on('state_update', (state) => {
+    isRunning = state.isRunning;
+    
+    if (isRunning) {
+      // If it was running, calculate the current elapsed time
+      const timePassed = Date.now() - state.timestamp;
+      elapsedTime = state.elapsedTime + timePassed;
+      startTime = Date.now() - elapsedTime;
+      
+      // Clear any existing interval
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+      
+      // Start a new interval
+      timerInterval = setInterval(updateTime, 1000); // Update every second
+    } else {
+      // If it wasn't running, just use the saved elapsed time
+      elapsedTime = state.elapsedTime;
+      
+      // Clear any existing interval
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      
+      // Update the display
+      updateDisplay();
+    }
+  });
+  
+  // Listen for settings updates
+  socket.on('settings_update', (settings) => {
+    // Update local settings
+    stopwatchName = settings.name || '';
+    imageUrl = settings.imageUrl || '';
+    primaryColor = settings.primaryColor || '#2b3075';
+    secondaryColor = settings.secondaryColor || '#ec1f2a';
+    
+    // Save to localStorage for persistence
+    localStorage.setItem(settingsKey, JSON.stringify(settings));
+    
+    // Update UI
+    updateStopwatchName();
+    loadBackgroundImage();
+    applyCustomColors();
   });
   
   // Timer functions
   function startTimer() {
     if (!isRunning) {
       startTime = Date.now() - elapsedTime;
-      timerInterval = setInterval(updateTime, 1000); // Update every second instead of 10ms
+      timerInterval = setInterval(updateTime, 1000); // Update every second
       isRunning = true;
       saveState();
     }
@@ -200,26 +240,9 @@ document.addEventListener('DOMContentLoaded', () => {
       startTime,
       timestamp: Date.now()
     };
-    localStorage.setItem(storageKey, JSON.stringify(state));
-  }
-  
-  function loadState() {
-    const savedState = localStorage.getItem(storageKey);
-    if (savedState) {
-      const state = JSON.parse(savedState);
-      isRunning = state.isRunning;
-      
-      if (isRunning) {
-        // If it was running, calculate the current elapsed time
-        const timePassed = Date.now() - state.timestamp;
-        elapsedTime = state.elapsedTime + timePassed;
-        startTime = Date.now() - elapsedTime;
-        timerInterval = setInterval(updateTime, 10);
-      } else {
-        // If it wasn't running, just use the saved elapsed time
-        elapsedTime = state.elapsedTime;
-      }
-    }
+    
+    // Emit state update to server
+    socket.emit('state_update', { stopwatchId, state });
   }
 });
 

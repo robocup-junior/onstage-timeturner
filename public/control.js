@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Connect to Socket.io server
+  const socket = io();
+  
   // Get stopwatch ID from URL parameter
   let params = new URLSearchParams(window.location.search);
   let stopwatchId = params.get('id');
@@ -9,11 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
   
+  // Join the specific stopwatch room
+  socket.emit('join', stopwatchId);
+  
   // Display the stopwatch ID
   document.getElementById('stopwatchId').textContent = stopwatchId;
   
-  // Set up localStorage keys for this specific stopwatch
-  const storageKey = `stopwatch_${stopwatchId}`;
+  // Set up localStorage keys for settings (still using localStorage for settings persistence)
   const settingsKey = `stopwatch_settings_${stopwatchId}`;
   
   // Load saved settings
@@ -42,14 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
     createNewStopwatch();
   });
   
-  // Function to send commands via localStorage
+  // Function to send commands via Socket.io
   function sendCommand(command) {
-    const state = {
-      command,
-      timestamp: Date.now()
-    };
-    
-    localStorage.setItem(storageKey, JSON.stringify(state));
+    socket.emit('command', { stopwatchId, command });
   }
   
   // Function to load settings from localStorage
@@ -61,6 +61,19 @@ document.addEventListener('DOMContentLoaded', () => {
       imageUrl = settings.imageUrl || '';
     }
   }
+  
+  // Listen for settings updates from other clients
+  socket.on('settings_update', (settings) => {
+    // Update local settings
+    stopwatchName = settings.name || '';
+    imageUrl = settings.imageUrl || '';
+    
+    // Save to localStorage
+    localStorage.setItem(settingsKey, JSON.stringify(settings));
+    
+    // Update UI
+    updatePageTitle();
+  });
   
   // Function to generate a random ID for a new stopwatch
   function generateId() {

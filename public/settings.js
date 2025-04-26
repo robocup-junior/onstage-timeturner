@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Connect to Socket.io server
+  const socket = io();
+  
   // Get stopwatch ID from URL parameter
   let params = new URLSearchParams(window.location.search);
   let stopwatchId = params.get('id');
@@ -8,6 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = 'index.html';
     return;
   }
+  
+  // Join the specific stopwatch room
+  socket.emit('join', stopwatchId);
   
   // Display the stopwatch ID
   document.getElementById('stopwatchId').textContent = stopwatchId;
@@ -71,6 +77,28 @@ document.addEventListener('DOMContentLoaded', () => {
   // Add event listeners to buttons
   saveSettingsBtn.addEventListener('click', saveSettings);
   
+  // Listen for settings updates from other clients
+  socket.on('settings_update', (settings) => {
+    stopwatchName = settings.name || '';
+    imageUrl = settings.imageUrl || '';
+    primaryColor = settings.primaryColor || '#2b3075';
+    secondaryColor = settings.secondaryColor || '#ec1f2a';
+    
+    // Update form values
+    nameInput.value = stopwatchName;
+    imageUrlInput.value = imageUrl;
+    primaryColorInput.value = primaryColor;
+    primaryColorTextInput.value = primaryColor;
+    secondaryColorInput.value = secondaryColor;
+    secondaryColorTextInput.value = secondaryColor;
+    
+    // Save to localStorage
+    localStorage.setItem(settingsKey, JSON.stringify(settings));
+    
+    // Update page title and links
+    updatePageTitle();
+  });
+  
   // Function to load settings from localStorage
   function loadSettings() {
     const savedSettings = localStorage.getItem(settingsKey);
@@ -97,7 +125,11 @@ document.addEventListener('DOMContentLoaded', () => {
       secondaryColor: secondaryColor
     };
     
+    // Save to localStorage for persistence
     localStorage.setItem(settingsKey, JSON.stringify(settings));
+    
+    // Emit settings update via Socket.io
+    socket.emit('settings_update', { stopwatchId, settings });
     
     // Update page title and links
     updatePageTitle();
