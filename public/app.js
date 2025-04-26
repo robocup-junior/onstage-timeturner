@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load settings
   let stopwatchName = '';
   let imageUrl = '';
+  let primaryColor = '#2b3075'; // Default primary color
+  let secondaryColor = '#ec1f2a'; // Default secondary color
   loadSettings();
   
   // Set document title and display name if available
@@ -57,7 +59,45 @@ document.addEventListener('DOMContentLoaded', () => {
       const settings = JSON.parse(savedSettings);
       stopwatchName = settings.name || '';
       imageUrl = settings.imageUrl || '';
+      primaryColor = settings.primaryColor || '#2b3075';
+      secondaryColor = settings.secondaryColor || '#ec1f2a';
+      
+      // Apply custom colors
+      applyCustomColors();
     }
+  }
+  
+  // Function to apply custom colors to the page
+  function applyCustomColors() {
+    const root = document.documentElement;
+    root.style.setProperty('--primary-color', primaryColor);
+    root.style.setProperty('--secondary-color', secondaryColor);
+    
+    // Derive other colors
+    const darkBg = adjustColorBrightness(primaryColor, -0.2); // 20% darker
+    const lightAccent = adjustColorBrightness(primaryColor, 0.2); // 20% lighter
+    
+    root.style.setProperty('--dark-bg', darkBg);
+    root.style.setProperty('--light-accent', lightAccent);
+  }
+  
+  // Function to adjust color brightness
+  function adjustColorBrightness(hex, percent) {
+    // Convert hex to RGB
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+    
+    // Adjust brightness
+    r = Math.max(0, Math.min(255, Math.round(r + (percent * 255))));
+    g = Math.max(0, Math.min(255, Math.round(g + (percent * 255))));
+    b = Math.max(0, Math.min(255, Math.round(b + (percent * 255))));
+    
+    // Convert back to hex
+    return '#' + 
+      r.toString(16).padStart(2, '0') + 
+      g.toString(16).padStart(2, '0') + 
+      b.toString(16).padStart(2, '0');
   }
   
   // Function to update stopwatch name display

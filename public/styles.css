@@ -125,7 +125,6 @@ body {
   max-height: 100%;
   object-fit: contain;
   border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 #wall-clock {
@@ -187,13 +186,29 @@ p {
   margin-top: 20px;
 }
 
+.settings-page {
+  background-color: var(--dark-bg);
+}
+
+#settings-container {
+  width: 100%;
+  max-width: 700px;
+  background-color: var(--primary-color);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .settings-group {
   width: 100%;
   margin: 15px 0 25px 0;
 }
 
 .setting-item {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -203,6 +218,12 @@ p {
   font-size: 1rem;
   margin-bottom: 5px;
   color: var(--text-color);
+}
+
+.setting-item label small {
+  opacity: 0.7;
+  font-weight: normal;
+  font-size: 0.8rem;
 }
 
 .setting-item input {
@@ -219,6 +240,24 @@ p {
 .setting-item input:focus {
   outline: none;
   border-color: var(--secondary-color);
+}
+
+.color-input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-input-container input[type="color"] {
+  width: 60px;
+  height: 40px;
+  padding: 2px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.color-input-container input[type="text"] {
+  flex: 1;
 }
 
 #saveSettingsBtn {

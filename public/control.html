@@ -14,18 +14,6 @@
     <div id="control-container">
       <h1>Stopwatch Control</h1>
       
-      <div class="settings-group">
-        <div class="setting-item">
-          <label for="stopwatchName">Stopwatch Name: <small>(also creates a custom URL)</small></label>
-          <input type="text" id="stopwatchName" placeholder="Enter a name for this stopwatch">
-        </div>
-        
-        <div class="setting-item">
-          <label for="imageUrl">Background Image URL:</label>
-          <input type="url" id="imageUrl" placeholder="Enter a URL for a background image">
-        </div>
-      </div>
-      
       <div class="controls">
         <button id="startBtn">Start</button>
         <button id="stopBtn">Stop</button>
@@ -34,8 +22,8 @@
       
       <div class="control-links">
         <a href="#" id="watchLink">View Stopwatch</a>
+        <a href="#" id="settingsLink" class="secondary-btn">Settings</a>
         <a href="#" id="createNewBtn" class="secondary-btn">Create New Stopwatch</a>
-        <button id="saveSettingsBtn">Save Settings</button>
       </div>
       
       <p class="current-id">Stopwatch ID: <span id="stopwatchId"></span></p>
