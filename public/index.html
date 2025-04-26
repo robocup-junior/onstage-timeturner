@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="fullscreen-app">
+    <div id="display-container">
+      <!-- Title removed, now only in document.title -->
+      <div id="display">
+        <div class="digit-group">
+          <div class="digit" id="minute-tens">0</div>
+          <div class="digit" id="minute-ones">0</div>
+        </div>
+        <div class="separator">:</div>
+        <div class="digit-group">
+          <div class="digit" id="second-tens">0</div>
+          <div class="digit" id="second-ones">0</div>
+        </div>
+      </div>
+      
+      <div id="background-image-container">
+        <!-- The background image will be set by JavaScript -->
+      </div>
+      
+      <div id="wall-clock">
+        <div class="digit-group small">
+          <div class="digit small" id="hour-tens">0</div>
+          <div class="digit small" id="hour-ones">0</div>
+        </div>
+        <div class="separator small">:</div>
+        <div class="digit-group small">
+          <div class="digit small" id="clock-minute-tens">0</div>
+          <div class="digit small" id="clock-minute-ones">0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
