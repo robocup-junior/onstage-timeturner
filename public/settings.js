@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (savedSettings) {
       const settings = JSON.parse(savedSettings);
       stopwatchName = settings.name || '';
-      imageUrl = settings.imageUrl || '';
+      imageUrl = settings.imageUrl || 'https://junior.robocup.org/wp-content/uploads/2025/01/logo_onstage.png';
       primaryColor = settings.primaryColor || '#2b3075';
       secondaryColor = settings.secondaryColor || '#ec1f2a';
     }

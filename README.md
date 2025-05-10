@@ -1,58 +1,86 @@
-# Multi-Instance Stopwatch App
+# ⏱ Multi-Instance Stopwatch App
 
-A web application that provides stopwatch functionality with separate display and control screens. Multiple stopwatches can be run simultaneously using unique IDs.
+A web-based stopwatch system with **separate display and control screens**, designed to support **multiple independent stopwatches** using unique IDs. Perfect for events or performances where multiple timers need to be run and managed in parallel.
 
-## Features
+---
 
-- Stopwatch with hours, minutes, seconds, and milliseconds
-- Separate display and control screens
-- Multiple stopwatch instances via unique IDs
-- Controls: Start, Stop, Reset
-- Persistent state via localStorage
+## 🚀 Features
 
-## How It Works
+- Millisecond-precision stopwatch (hh:mm:ss.ms)
+- Real-time synchronization between control and display
+- Multiple stopwatch instances via unique `?id=` in URL
+- Persistent state via `localStorage` (resumes even after reload)
+- Easily shareable links to each stopwatch
+- No backend database required
 
-1. Each stopwatch has a unique ID in the URL parameter
-2. The display screen shows the stopwatch time
-3. The control screen has buttons to start, stop, and reset the stopwatch
-4. Communication between screens uses localStorage events
-5. State persists if you close and reopen the browser
+---
 
-## Usage
+## 🧠 How It Works
 
-### Installation
+1. Each stopwatch instance is identified by a unique `id` passed as a URL query parameter.
+2. **`index.html`** is the display view (e.g. projected timer).
+3. **`control.html`** provides Start / Stop / Reset controls.
+4. Pages sync via `localStorage` and `Socket.IO` for real-time updates.
+5. State is preserved locally, even after browser refresh or temporary disconnect.
 
+---
+
+## 🔧 Setup & Installation
+
+### 1. Install dependencies
 ```bash
 npm install
-```
 
-### Running the App
-
+### 2. Run the application
 ```bash
 npm start
 ```
+By default, this starts a server at:  
+`http://localhost:3000`
 
-This will start the server on port 3000 (or the port specified in the PORT environment variable).
-
-Open your browser and navigate to `http://localhost:3000` to use the app.
-
-### Development Mode
-
+> To run in development mode (with auto-reload):
 ```bash
 npm run dev
 ```
 
-This uses nodemon to automatically restart the server when changes are detected.
+## Setup Timer
+1. Open: `http://localhost:3000/control.html` to generate a new timer.
+2. Use the settings page to setup the `id` for your timer.
+3. You can also set the logo and color theme for your timer.
 
-## How to Use
+## 🕹️ How to Use
+1. Open: `http://localhost:3000/index.html?id=<your_timer_id>`  
+   → This is your stopwatch **display** screen.
 
-1. Navigate to the app homepage
-2. A unique stopwatch ID will be generated
-3. Use the "Go to Control Panel" link to open the control page
-4. Use the Start, Stop, and Reset buttons to control your stopwatch
-5. Share the URL with others to let them view the same stopwatch
-6. Create multiple stopwatches by navigating to the homepage in different tabs
+2. Open: `http://localhost:3000/control.html?id=<your_timer_id>`  
+   → This is your **control** screen (Start, Stop, Reset).
 
-## License
+3. To view or control multiple stopwatches, just use different `id` values (e.g. `stage1`, `stage2`, etc).
 
-MIT
+4. Share the same URL on multiple devices to view or control the same stopwatch in real time.
+
+## 🌐 Multi-Device Access
+If accessing over a network (e.g. for an event setup):
+
+```
+http://<your-local-IP>:3000/index.html?id=<timer_name>
+http://<your-local-IP>:3000/control.html?id=<timer_name>
+```
+
+You can get your local IP using:
+```bash
+ipconfig   # Windows
+ifconfig   # macOS/Linux
+```
+
+## 🗂 File Structure
+```
+public/
+├── index.html        # Stopwatch display
+├── control.html      # Stopwatch control panel
+├── style.css         # Shared styling
+└── script.js         # Stopwatch logic and communication
+```
+
+## 📄 License
+MIT License
